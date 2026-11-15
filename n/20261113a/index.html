@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>UPSHIFT｜会議のまとめ</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="アップシフト合同会社">
+<meta property="og:title" content="UPSHIFT｜会議のまとめ">
+<meta property="og:description" content="リンクを受け取った方専用のページです。">
+<meta property="og:image" content="https://upshift-jp.github.io/notes/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FBF5EE;color:#1A1A1A;font-family:"Hiragino Sans","Noto Sans JP","Meiryo",sans-serif}
+.b{text-align:center;padding:24px}.lg{letter-spacing:.3em;font-weight:700;color:#9E4F3B;font-size:14px}.m{margin-top:12px;font-size:16px}</style>
+</head><body><div class="b"><div class="lg">UPSHIFT</div><div class="m" id="m">開いています…</div></div>
+<script>
+(function(){
+var m=document.getElementById('m');
+function fail(t){m.textContent=t||'このリンクでは開けません。送り主にお問い合わせください。';}
+var p=new URLSearchParams(location.hash.slice(1)),k=p.get('k')||new URLSearchParams(location.search).get('k');
+if(!k||!window.crypto||!crypto.subtle){fail();return;}
+function b64(s){var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;}
+async function dec(url){
+ var j=await (await fetch(url,{cache:'no-store'})).json();
+ var base=await crypto.subtle.importKey('raw',new TextEncoder().encode(k),'PBKDF2',false,['deriveKey']);
+ var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(j.s),iterations:j.it,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+ return crypto.subtle.decrypt({name:'AES-GCM',iv:b64(j.i)},key,b64(j.c));
+}
+window.__upDecrypt=dec;
+dec('data.enc').then(function(buf){
+ var html=new TextDecoder().decode(buf);
+ document.open();document.write(html);document.close();
+}).catch(function(){fail();});
+})();
+</script></body></html>

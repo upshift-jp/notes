@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="ウチ、もらえる？診断｜30秒で取り逃がし額をチェック">
+<meta property="og:description" content="8つの質問に答えるだけで、御社が使える補助金・助成金と推定額がわかります。アップシフト合同会社">
+<title>ウチ、もらえる？診断｜アップシフト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Inter:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14263d; --navy:#163a5f; --navy2:#1f4f7d; --accent:#e8572a; --accent-soft:#fdeee8;
+  --bg:#f4f6f9; --card:#fff; --line:#dfe4ea; --muted:#6b7785; --ok:#1a8a5a;
+  --c1:#1f4f7d; --c2:#2f9e8f; --c3:#e8572a; --c4:#b48a2c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Zen Kaku Gothic New",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 64px}
+header.top{background:var(--navy);color:#fff}
+header.top .wrap{padding:14px 16px;display:flex;align-items:center;gap:10px}
+.logo{font-weight:900;letter-spacing:.06em;font-size:15px}
+.logo span{color:#ffb79c}
+.tag{font-size:11px;opacity:.75;margin-left:auto}
+
+.hero{padding:36px 0 22px;text-align:center}
+.eyebrow{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 12px;border-radius:999px;letter-spacing:.08em}
+.hero h1{font-size:clamp(24px,5.4vw,34px);font-weight:900;line-height:1.35;margin:14px 0 10px}
+.hero h1 em{font-style:normal;color:var(--accent);background:linear-gradient(transparent 62%,#ffd9cb 62%)}
+.hero p{font-size:14px;color:var(--muted)}
+.brandname{font-weight:900;font-size:22px;color:var(--navy);margin-bottom:10px;letter-spacing:.02em}
+.brandname span{color:var(--accent);margin-left:2px}
+.flow{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.flow div{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.flow b{color:var(--navy2)}
+
+.progress{position:sticky;top:0;z-index:5;background:rgba(244,246,249,.94);backdrop-filter:blur(6px);padding:10px 0}
+.bar{height:6px;background:#e3e8ee;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy2),var(--accent));transition:width .3s}
+.progress small{display:block;text-align:right;font-size:11px;color:var(--muted);margin-top:4px}
+
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;margin-top:14px;transition:border-color .2s}
+.q.done{border-color:#c6d4e3}
+.q h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px}
+.q h2 .n{font-family:Inter,sans-serif;font-size:12px;color:#fff;background:var(--navy);border-radius:6px;padding:2px 7px}
+.q.done h2 .n{background:var(--ok)}
+.q .hint{font-size:12px;color:var(--muted);margin:2px 0 0 42px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.opt{font:inherit;font-size:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 15px;cursor:pointer;transition:all .15s}
+.opt:hover{border-color:var(--navy2)}
+.opt[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+
+.submit{margin-top:24px;text-align:center}
+.btn{font:inherit;font-weight:900;font-size:17px;border:0;border-radius:12px;padding:16px 20px;width:100%;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 6px 0 #b8401b;transition:transform .1s,box-shadow .1s,opacity .2s}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #b8401b}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.submit small{display:block;font-size:12px;color:var(--muted);margin-top:10px}
+
+/* result */
+#result{display:none;padding-top:28px}
+.res-head{background:var(--navy);color:#fff;border-radius:18px;padding:28px 20px;text-align:center;position:relative;overflow:hidden}
+.res-head::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+.res-head p{font-size:14px;opacity:.85}
+.amount{font-family:Inter,sans-serif;font-weight:800;font-size:clamp(44px,12vw,68px);line-height:1.1;margin:8px 0 2px;color:#ffd2c0}
+.amount small{font-family:"Zen Kaku Gothic New";font-size:20px;font-weight:700;color:#fff;margin-left:4px}
+.res-head .sub{font-size:12px;opacity:.7}
+
+.sec{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:14px}
+.sec h3{font-size:15px;font-weight:900;margin-bottom:12px}
+.stack{display:flex;height:16px;border-radius:9px;overflow:hidden;background:#eef1f4}
+.stack i{display:block;height:100%}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:12px;font-size:13px}
+.legend div{display:flex;align-items:center;gap:8px}
+.legend .sw{width:10px;height:10px;border-radius:3px;flex:none}
+.legend b{margin-left:auto;font-family:Inter,sans-serif;font-size:13px}
+.legend .src{display:block;font-size:11px;color:var(--muted)}
+
+.item{border-top:1px solid var(--line);padding:14px 0}
+.item:first-of-type{border-top:0;padding-top:0}
+.item .row{display:flex;gap:10px;align-items:baseline}
+.chip{font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 7px;flex:none}
+.item h4{font-size:15px;font-weight:700}
+.item .amt{margin-left:auto;font-family:Inter,sans-serif;font-weight:800;color:var(--navy);white-space:nowrap;font-size:15px}
+.item .amt.na{font-family:inherit;font-size:12px;color:var(--muted);font-weight:500}
+.item p{font-size:13px;color:var(--muted);margin-top:4px}
+.item .why{font-size:12px;color:var(--navy2);margin-top:4px}
+.item .grp{font-size:11px;color:var(--accent)}
+
+.msg{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:10px;padding:14px 16px;font-size:14px;margin-top:14px}
+.msg b{color:var(--accent)}
+.cta{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:16px;padding:22px 18px;margin-top:18px;text-align:center}
+.cta h3{font-size:18px;font-weight:900}
+.cta p{font-size:13px;opacity:.85;margin:6px 0 14px}
+.cta a{display:block;text-decoration:none;font-weight:900;border-radius:10px;padding:14px;margin-top:10px}
+.cta .line{background:#06c755;color:#fff}
+.cta .book{background:#fff;color:var(--navy)}
+.cta .off{opacity:.45;pointer-events:none}
+.lf{background:#fff;color:var(--ink);border-radius:12px;padding:16px;text-align:left;display:grid;gap:12px}
+.lf label{display:block;font-size:13px;font-weight:700}
+.lf input:not([type=checkbox]),.lf textarea{display:block;width:100%;margin-top:5px;font:inherit;font-size:16px;font-weight:400;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px}
+.lf input:focus,.lf textarea:focus{outline:none;border-color:var(--navy2)}
+.req,.opt2{font-size:10px;font-weight:700;margin-left:6px;padding:1px 6px;border-radius:4px;color:#fff;background:var(--accent);vertical-align:2px}
+.opt2{background:#9aa5b1}
+.lf .agree{font-size:12px;font-weight:400;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+.lf .agree input{margin-top:4px;width:16px;height:16px;flex:none}
+.lf .btn{margin-top:4px}
+.ferr{color:#c0392b;font-size:13px;min-height:0}
+.thanks{background:#fff;color:var(--ink);border-radius:12px;padding:22px 16px}
+.thanks .big{font-size:20px;font-weight:900;color:var(--ok)}
+.thanks p{font-size:13px;color:var(--muted);margin:6px 0 0;opacity:1}
+.cta .alt{font-size:12px;opacity:.75;margin-top:16px}
+.notes{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.8}
+.again{display:block;margin:18px auto 0;font:inherit;font-size:14px;background:none;border:0;color:var(--navy2);text-decoration:underline;cursor:pointer}
+footer{text-align:center;font-size:11px;color:var(--muted);padding:20px 0}
+@media (max-width:480px){.legend{grid-template-columns:1fr}.q .hint{margin-left:0}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><div class="logo">UP<span>SHIFT</span></div><div class="tag">経営の初速を上げ、事業を加速する</div></div></header>
+
+<main class="wrap">
+  <div id="form">
+    <section class="hero">
+      <div class="brandname">ウチ、もらえる？<span>診断</span></div>
+      <span class="eyebrow">8つの質問・約30秒</span>
+      <h1>あなたの会社が<br><em>取り逃がしている</em>お金はいくら？</h1>
+      <p>法人税・雇用保険料・地方税など、すでに納めているお金は<br>補助金・助成金・奨励金・税制優遇として「戻ってくる」可能性があります。</p>
+      <div class="flow">
+        <div>法人税など → <b>国の補助金・税制</b></div>
+        <div>雇用保険料 → <b>助成金</b></div>
+        <div>都税など → <b>自治体の助成・奨励金</b></div>
+      </div>
+    </section>
+    <div class="progress"><div class="bar"><i id="pbar"></i></div><small id="ptext">0 / 8 回答済み</small></div>
+    <div id="questions"></div>
+    <div class="submit">
+      <button class="btn" id="go" disabled>取り逃がし額を診断する</button>
+      <small id="gohint">8問すべてに答えると診断できます</small>
+    </div>
+  </div>
+
+  <div id="result"></div>
+</main>
+<footer>© アップシフト合同会社（東京都八王子市）</footer>
+
+<script>
+/* ============================================================
+   設定：公開前にここを差し替えてください
+   ============================================================ */
+const CONFIG = {
+  endpoint: "",     // Apps ScriptのウェブアプリURL（…/exec）。設定すると見込み客リストに保存されます
+  lineUrl: "",      // 例: https://lin.ee/xxxxxxx （空なら「準備中」表示）
+  bookingUrl: "",   // 例: 日程調整ページのURL
+};
+
+/* ============================================================
+   質問
+   ============================================================ */
+const Q = [
+  {id:"pref", t:"会社の所在地は？", o:["東京都","神奈川県","埼玉県","千葉県","大阪府","愛知県","福岡県","その他の道府県"]},
+  {id:"emp", t:"従業員数は？", h:"役員を除く。パート・アルバイトを含む雇用保険加入者の目安", o:["0名","1〜5名","6〜20名","21〜50名","51名以上"]},
+  {id:"ind", t:"業種に一番近いのは？", o:["製造・建設・運輸","小売・卸・EC","サービス・飲食","宿泊・観光","福祉・介護","IT・情報通信","その他"]},
+  {id:"rev", t:"年商の規模は？", o:["〜3千万円","3千万〜1億円","1〜3億円","3〜10億円","10億円以上"]},
+  {id:"pl", t:"直近期の損益は？", o:["黒字","赤字","創業1年目（決算前）"]},
+  {id:"plan", t:"今後1〜2年に予定していることは？", h:"あてはまるものをすべて選択", multi:true, o:["設備・機械の導入","省力化・自動化","ITツール・AI導入","新事業・新商品","店舗改装・新築","新しい販路・EC強化","賃上げ","正社員化・採用","AI研修・DX研修","その他の社員研修","特になし"]},
+  {id:"fund", t:"借入・資金調達は？", o:["予定・検討あり","すでに借入がある","予定なし"]},
+  {id:"age", t:"創業からの年数は？", o:["1年未満","1〜3年","3〜5年","5〜10年","10年以上"]},
+];
+const A = {}; // answers
+
+/* ============================================================
+   制度データ（金額は「上限・最大額ベースの目安」）
+   ※ 公開前に必ず最新の公募要領・支給要領で確認・更新すること
+   cat: hojo=国の補助金 / jyosei=助成金(雇用保険財源) / jichi=自治体 / zei=税制
+   合計額：該当制度の上限額をすべて合算（国・都道府県の併用可。同一経費への重複補助は不可）
+   ============================================================ */
+const CAT = {
+  hojo:{name:"国の補助金", src:"財源：法人税などの国税", color:"var(--c1)"},
+  jyosei:{name:"助成金", src:"財源：雇用保険料（事業主負担分）", color:"var(--c2)"},
+  jichi:{name:"自治体の助成・奨励金", src:"財源：都道府県・市区町村の税", color:"var(--c3)"},
+  zei:{name:"税制優遇", src:"納める法人税そのものが減る", color:"var(--c4)"},
+};
+const EMP_IDX = {"0名":0,"1〜5名":1,"6〜20名":2,"21〜50名":3,"51名以上":4};
+const has = p => (A.plan||[]).includes(p);
+const any = (...ps) => ps.some(has);
+const ei = () => EMP_IDX[A.emp];
+const young = () => ["1年未満","1〜3年","3〜5年"].includes(A.age);
+const firstYear = () => A.pl==="創業1年目（決算前）" || A.age==="1年未満";
+
+const PROGRAMS = [
+  { name:"小規模事業者持続化補助金", cat:"hojo",
+    desc:"販路開拓・店舗改装・広告などの経費を2/3補助。",
+    ok:()=>{ const lim = ["製造・建設・運輸","宿泊・観光"].includes(A.ind)?20:5;
+             const n=[0,5,20,50,51][ei()]; return n<=lim && any("新しい販路・EC強化","店舗改装・新築","新事業・新商品","設備・機械の導入"); },
+    amt:()=> has("賃上げ")?250:100,
+    why:()=> has("賃上げ")?"小規模事業者×販路開拓。賃上げ特例・インボイス特例の上乗せを含む最大額":"小規模事業者×販路開拓。インボイス特例の上乗せを含む最大額" },
+
+  { name:"新事業進出・ものづくり補助金", cat:"hojo", group:"setsubi",
+    desc:"革新的な新製品・新サービス、新市場への進出に伴う設備投資を補助。",
+    ok:()=> !firstYear() && any("新事業・新商品","設備・機械の導入"),
+    amt:()=> has("新事業・新商品") ? [2500,2500,2500,4000,7000][ei()] : [750,750,1000,1500,2500][ei()],
+    why:()=> has("新事業・新商品")?"新事業・新商品の予定あり（新事業進出枠の従業員規模別上限）":"設備投資の予定あり（革新的新製品・サービス枠の従業員規模別上限）" },
+
+  { name:"中小企業省力化投資補助金（一般型）", cat:"hojo", group:"setsubi",
+    desc:"人手不足解消のためのオーダーメイドの省力化設備・システムを補助。",
+    ok:()=> ei()>=1 && any("省力化・自動化","設備・機械の導入"),
+    amt:()=> [750,750,1500,3000,5000][ei()],
+    why:()=>"省力化・設備投資の予定あり（従業員規模別上限）" },
+
+  { name:"デジタル化・AI導入補助金", cat:"hojo",
+    desc:"業務効率化・売上アップにつながるITツール・AI搭載ツールの導入費用を補助（旧IT導入補助金）。",
+    ok:()=> any("ITツール・AI導入","新しい販路・EC強化","省力化・自動化"),
+    amt:()=> 450,
+    why:()=>"ITツール・AI導入／EC強化／省力化の予定あり（通常枠の上限の目安）" },
+
+  { name:"中小企業成長加速化補助金", cat:"hojo", group:"setsubi",
+    desc:"売上100億円を目指す企業の大型投資（1億円以上）を補助。",
+    ok:()=> A.rev==="10億円以上" && any("設備・機械の導入","店舗改装・新築","省力化・自動化","新事業・新商品"),
+    amt:()=> 50000,
+    why:()=>"年商10億円以上×大型投資" },
+
+  { name:"キャリアアップ助成金（正社員化コース）", cat:"jyosei",
+    desc:"有期雇用・パート等を正社員に転換すると1人あたり定額を助成。",
+    ok:()=> ei()>=1 && has("正社員化・採用"),
+    amt:()=> 80*[0,1,2,3,5][ei()],
+    why:()=>`正社員化の予定あり（1人最大80万円 × ${[0,1,2,3,5][ei()]}人想定）` },
+
+  { name:"業務改善助成金", cat:"jyosei",
+    desc:"事業場内最低賃金の引上げと生産性向上の設備投資をセットで助成。",
+    ok:()=> ei()>=1 && has("賃上げ"),
+    amt:()=> [0,150,300,450,600][ei()],
+    why:()=>"賃上げの予定あり（引上げ人数に応じた上限の目安）。事業場内最低賃金が地域最賃に近い場合が対象" },
+
+  { name:"人材開発支援助成金（事業展開等リスキリング支援コース）", cat:"jyosei",
+    desc:"新事業・DX・AI活用に向けた研修の経費と研修中の賃金を助成（中小は経費の75%）。",
+    ok:()=> ei()>=1 && has("AI研修・DX研修"),
+    amt:()=> [0,100,300,600,1000][ei()],
+    why:()=>"AI・DX研修の予定あり（従業員規模から想定した研修規模での目安）" },
+
+  { name:"人材開発支援助成金（人材育成支援コース）", cat:"jyosei",
+    desc:"職務に関連する訓練の経費と賃金の一部を助成。",
+    ok:()=> ei()>=1 && has("その他の社員研修"),
+    amt:()=> [0,30,100,200,400][ei()],
+    why:()=>"社員研修の予定あり（想定研修規模での目安）" },
+
+  /* ---- 東京都 ---- */
+  { name:"東京都 創業助成事業", cat:"jichi",
+    desc:"都内で創業5年未満の事業者の賃借料・人件費等を助成（所定の創業支援の利用が要件）。",
+    ok:()=> A.pref==="東京都" && young(),
+    amt:()=> 400, why:()=>"東京都×創業5年未満" },
+
+  { name:"東京都 躍進的な事業推進のための設備投資支援事業", cat:"jichi", group:"setsubi",
+    desc:"競争力強化・DX・イノベーション等のための設備投資を助成。",
+    ok:()=> A.pref==="東京都" && !firstYear() && any("設備・機械の導入","省力化・自動化","新事業・新商品"),
+    amt:()=> ei()<=1 ? 3000 : 10000,
+    why:()=>"東京都×設備投資（小規模は上限が異なる場合あり）" },
+
+  { name:"東京都 DXリスキリング助成金", cat:"jichi",
+    desc:"従業員のDX・AI関連の民間研修受講費を助成（経費の3/4）。",
+    ok:()=> A.pref==="東京都" && ei()>=1 && has("AI研修・DX研修"),
+    amt:()=> 100, why:()=>"東京都×AI・DX研修" },
+
+  { name:"東京都 正規雇用等転換安定化支援助成金", cat:"jichi",
+    desc:"国のキャリアアップ助成金（正社員化）に都が上乗せ助成。",
+    ok:()=> A.pref==="東京都" && ei()>=1 && has("正社員化・採用"),
+    amt:()=> 20*[0,1,2,3,5][ei()], why:()=>"東京都×正社員化（国の助成金への上乗せ）" },
+
+  /* ---- 東京都以外 ---- */
+  { name:"都道府県・市区町村の独自補助金", cat:"jichi",
+    desc:`${A.pref||"所在地"}や市区町村にも、設備投資・販路開拓・人材育成などの独自制度があります。`,
+    ok:()=> A.pref!=="東京都" && !has("特になし"),
+    amt:()=> null, why:()=>"所在地の制度を個別に確認します" },
+
+  /* ---- 税制 ---- */
+  { name:"中小企業経営強化税制", cat:"zei",
+    desc:"対象設備の取得で即時償却、または取得価額の最大10%を税額控除。",
+    ok:()=> A.pl==="黒字" && any("設備・機械の導入","省力化・自動化"),
+    amt:()=> null, why:()=>"黒字×設備投資（控除額は投資額による）" },
+
+  { name:"中小企業向け賃上げ促進税制", cat:"zei",
+    desc:"給与総額を前年より増やすと、増加額の最大45%を法人税から控除。",
+    ok:()=> A.pl==="黒字" && has("賃上げ"),
+    amt:()=> null, why:()=>"黒字×賃上げ（控除額は給与増加額による）" },
+];
+
+/* ============================================================
+   画面
+   ============================================================ */
+const qWrap = document.getElementById("questions");
+Q.forEach((q,i)=>{
+  const s=document.createElement("section"); s.className="q"; s.id="q-"+q.id;
+  s.innerHTML=`<h2><span class="n">Q${i+1}</span>${q.t}</h2>${q.h?`<div class="hint">${q.h}</div>`:""}<div class="opts"></div>`;
+  const box=s.querySelector(".opts");
+  q.o.forEach(v=>{
+    const b=document.createElement("button"); b.type="button"; b.className="opt"; b.textContent=v; b.setAttribute("aria-pressed","false");
+    b.onclick=()=>pick(q,v,s); box.appendChild(b);
+  });
+  qWrap.appendChild(s);
+});
+
+function pick(q,v,s){
+  if(q.multi){
+    let cur=A[q.id]||[];
+    if(v==="特になし") cur = cur.includes(v)?[]:[v];
+    else { cur=cur.filter(x=>x!=="特になし"); cur = cur.includes(v)?cur.filter(x=>x!==v):[...cur,v]; }
+    A[q.id]=cur.length?cur:undefined;
+  } else {
+    const first = A[q.id]===undefined; A[q.id]=v;
+    if(first){ const i=Q.indexOf(q); const nx=document.getElementById("q-"+(Q[i+1]||{}).id);
+      if(nx) setTimeout(()=>nx.scrollIntoView({behavior:"smooth",block:"center"}),150); }
+  }
+  s.querySelectorAll(".opt").forEach(b=>{
+    const on = q.multi ? (A[q.id]||[]).includes(b.textContent) : A[q.id]===b.textContent;
+    b.setAttribute("aria-pressed",on);
+  });
+  s.classList.toggle("done", A[q.id]!==undefined);
+  update();
+}
+function update(){
+  const n=Q.filter(q=>A[q.id]!==undefined).length;
+  document.getElementById("pbar").style.width=(n/Q.length*100)+"%";
+  document.getElementById("ptext").textContent=`${n} / ${Q.length} 回答済み`;
+  const go=document.getElementById("go"); go.disabled = n<Q.length;
+  document.getElementById("gohint").textContent = n<Q.length?`あと${Q.length-n}問で診断できます`:"準備ができました";
+}
+
+let LAST = null;
+// 流入元（URL末尾の ?src=gaia など）を取得
+let SRC = "";
+try { SRC = new URLSearchParams(location.search).get("src") || ""; } catch(e){}
+try { if(window.google && google.script && google.script.url){ google.script.url.getLocation(l=>{ SRC = (l.parameter && l.parameter.src) || SRC; }); } } catch(e){}
+function sendLead(e){
+  e.preventDefault();
+  const f=e.target, err=document.getElementById("ferr"), btn=document.getElementById("sendBtn");
+  const v=k=>(f.elements[k].value||"").trim();
+  const miss=[];
+  if(!v("company")) miss.push("会社名"); if(!v("name")) miss.push("お名前");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email"))) miss.push("メールアドレス");
+  if(v("tel") && v("tel").replace(/[^\d]/g,"").length<10) miss.push("電話番号（10桁以上）");
+  if(!f.elements.agree.checked) miss.push("同意のチェック");
+  if(miss.length){ err.textContent="入力をご確認ください："+miss.join("、"); return; }
+  err.textContent="";
+  const payload = {
+    company:v("company"), name:v("name"), email:v("email"), tel:v("tel"), staff:v("staff"), note:v("note"),
+    totalMan: LAST.total, totalText: yen(LAST.total)+"円",
+    answers: Q.map(q=>({q:q.t, a:Array.isArray(A[q.id])?A[q.id].join("・"):A[q.id]})),
+    programs: LAST.hits, byCat: LAST.byCat, src: SRC, ua: navigator.userAgent.slice(0,200)
+  };
+  const done=()=>{ f.hidden=true; document.getElementById("thanks").hidden=false; };
+  const fail=m=>{ btn.disabled=false; btn.textContent="無料で個別アドバイスを受け取る"; err.textContent=m; };
+  btn.disabled=true; btn.textContent="送信中…";
+  if(window.google && google.script && google.script.run){
+    google.script.run.withSuccessHandler(res=> res&&res.ok?done():fail(res&&res.error||"送信に失敗しました。時間をおいて再度お試しください。"))
+      .withFailureHandler(()=>fail("送信に失敗しました。時間をおいて再度お試しください。")).submitLead(payload);
+  } else if(CONFIG.endpoint){
+    fetch(CONFIG.endpoint,{method:"POST",body:JSON.stringify(payload)})
+      .then(r=>r.json()).then(res=> res&&res.ok?done():fail(res&&res.error||"送信に失敗しました。時間をおいて再度お試しください。"))
+      .catch(()=>fail("送信に失敗しました。時間をおいて再度お試しください。"));
+  } else {
+    // プレビュー環境（Apps Script以外）では送信しない
+    setTimeout(()=>{ done(); document.querySelector("#thanks p").innerHTML="※これはプレビューです。実際の送信は、Apps Scriptで公開したページから行われます。"; },500);
+  }
+}
+
+const yen = man => man>=10000 ? (man/10000).toLocaleString("ja-JP",{maximumFractionDigits:1})+"億" : man.toLocaleString("ja-JP")+"万";
+
+document.getElementById("go").onclick=()=>{
+  const hits = PROGRAMS.filter(p=>{try{return p.ok()}catch(e){return false}})
+    .map(p=>({...p, v:p.amt(), w:p.why(), d: typeof p.desc==="function"?p.desc():p.desc}));
+  // 東京都以外の説明文は回答後に生成
+  hits.forEach(h=>{ if(h.name.startsWith("都道府県")) h.d=`${A.pref}や市区町村にも、設備投資・販路開拓・人材育成などの独自制度があります。`; });
+
+  // 併用不可グループは最大の1件のみ計上
+  const best={}; hits.forEach(h=>{ if(h.group && h.v){ if(!best[h.group]||h.v>best[h.group].v) best[h.group]=h; }});
+  hits.forEach(h=>{ h.counted = !!h.v; });
+
+  const byCat={}; Object.keys(CAT).forEach(k=>byCat[k]=0);
+  hits.forEach(h=>{ if(h.counted) byCat[h.cat]+=h.v; });
+  const total=Object.values(byCat).reduce((a,b)=>a+b,0);
+  render(hits,byCat,total);
+};
+
+function render(hits,byCat,total){
+  const r=document.getElementById("result");
+  const order=["hojo","jyosei","jichi","zei"];
+  hits.sort((a,b)=>order.indexOf(a.cat)-order.indexOf(b.cat) || (b.v||0)-(a.v||0));
+  const grpNote = hits.some(h=>h.group && !h.counted && h.v);
+
+  const stack = total? order.filter(k=>byCat[k]).map(k=>`<i style="width:${byCat[k]/total*100}%;background:${CAT[k].color}"></i>`).join("") : "";
+  const legend = order.map(k=>`<div><span class="sw" style="background:${CAT[k].color}"></span><span>${CAT[k].name}<span class="src">${CAT[k].src}</span></span><b>${byCat[k]?yen(byCat[k])+"円":(hits.some(h=>h.cat===k)?"要試算":"—")}</b></div>`).join("");
+
+  const items = hits.map(h=>`<div class="item">
+      <div class="row"><span class="chip" style="background:${CAT[h.cat].color}">${CAT[h.cat].name}</span></div>
+      <div class="row" style="margin-top:6px"><h4>${h.name}</h4>${h.v?`<span class="amt">最大 ${yen(h.v)}円</span>`:`<span class="amt na">個別に試算</span>`}</div>
+      <p>${h.d}</p><div class="why">▶ ${h.w}</div>
+    </div>`).join("");
+
+  let advice = "";
+  if(A.fund!=="予定なし" && hits.some(h=>h.cat==="hojo")) advice += `<div class="msg"><b>資金繰りの注意：</b>補助金は原則「後払い」です。投資時点では全額を自社で立て替える必要があるため、金融機関との<b>つなぎ融資の設計</b>まで含めた計画が採択後の成否を分けます。</div>`;
+  advice += `<div class="msg"><b>アップシフトの考え方：</b>補助金は「もらうお金」ではなく<b>経営戦略を前に進めるための道具</b>です。金額から逆算するのではなく、自社の強みと次の一手を整理したうえで、合う制度を組み合わせることが採択率と事業成果の両方を高めます。</div>`;
+
+  const ctaBtn=(url,cls,label)=>`<a class="${cls}${url?"":" off"}" href="${url||"#"}" target="_blank" rel="noopener">${url?label:label+"（準備中）"}</a>`;
+
+  r.innerHTML = `
+    <div class="res-head">
+      <p>あなたの会社の「取り逃がし」推定額</p>
+      <div class="amount"><span id="cnt">0</span><small>${total>=10000?"億円":"万円"}</small></div>
+      <div class="sub">各制度の上限・最大額ベースの概算です</div>
+    </div>
+    ${total||hits.length?`
+    <div class="sec"><h3>取り戻せるお金の「財源」内訳</h3>
+      ${total?`<div class="stack">${stack}</div>`:""}
+      <div class="legend">${legend}</div>
+    </div>
+    <div class="sec"><h3>いま使える可能性のある制度（${hits.length}件）</h3>${items}
+      <p class="notes" style="margin-top:6px">合計額は、該当する各制度の上限額を合算した最大値です。国と都道府県の制度は併用できますが、同じ経費に重ねて補助を受けることはできないため、対象経費を分けて計画することが前提です。</p>
+    </div>`:`
+    <div class="sec"><h3>現時点で該当する制度は見つかりませんでした</h3><p style="font-size:14px;color:var(--muted)">今後の予定（Q6）によって使える制度は大きく変わります。事業の方向性を一緒に整理すると、思わぬ制度が見つかることも少なくありません。</p></div>`}
+    ${advice}
+    <div class="cta" id="lead">
+      <h3>この結果をもとに、無料で個別診断します</h3>
+      <p>補助金支援9年以上の視点で、御社に本当に合う制度と<br>申請の順番をまとめた「個別アドバイス」をお届けします。</p>
+      <form id="leadForm" class="lf" novalidate>
+        <label>会社名<span class="req">必須</span><input name="company" autocomplete="organization" required></label>
+        <label>お名前<span class="req">必須</span><input name="name" autocomplete="name" required></label>
+        <label>メールアドレス<span class="req">必須</span><input name="email" type="email" autocomplete="email" required></label>
+        <label>電話番号<span class="opt2">任意</span><input name="tel" type="tel" autocomplete="tel"></label>
+        <label>従業員数<span class="opt2">任意</span><input name="staff" type="number" min="0" inputmode="numeric" placeholder="例：12（人）"></label>
+        <label>ご相談したいこと<span class="opt2">任意</span><textarea name="note" rows="3" placeholder="例：来年の設備投資で使える補助金を知りたい"></textarea></label>
+        <label class="agree"><input type="checkbox" name="agree" required> ご入力いただいた情報は、診断結果のご案内とご相談への対応にのみ利用します。内容に同意します。</label>
+        <div class="ferr" id="ferr"></div>
+        <button class="btn" id="sendBtn" type="submit">無料で個別アドバイスを受け取る</button>
+      </form>
+      <div id="thanks" class="thanks" hidden>
+        <div class="big">✓ 送信しました</div>
+        <p>ご入力のメールアドレスに診断結果をお送りしました。<br>担当より2営業日以内にご連絡いたします。</p>
+      </div>
+      ${CONFIG.lineUrl||CONFIG.bookingUrl?`<div class="alt">お急ぎの方はこちらから</div>`:""}
+      ${CONFIG.lineUrl?ctaBtn(CONFIG.lineUrl,"line","LINEで相談する"):""}
+      ${CONFIG.bookingUrl?ctaBtn(CONFIG.bookingUrl,"book","無料オンライン面談を予約する"):""}
+    </div>
+    <p class="notes">※本診断は各制度の公表されている上限額と標準的な前提にもとづく概算であり、採択・支給・適用を保証するものではありません。<br>※実際の金額は投資額・対象経費・補助率・要件の充足状況により変わります。公募時期や制度内容は年度ごとに変更されるため、最新の公募要領・支給要領をご確認ください。<br>※すでに活用中の制度は差し引いてお考えください。</p>
+    <button class="again" id="again">条件を変えてもう一度診断する</button>`;
+
+  LAST = { total, hits: hits.map(h=>h.name+(h.v?`（最大${yen(h.v)}円）`:"（個別試算）")), byCat };
+  document.getElementById("leadForm").onsubmit = sendLead;
+
+  document.getElementById("form").style.display="none";
+  r.style.display="block"; window.scrollTo({top:0,behavior:"smooth"});
+  document.getElementById("again").onclick=()=>{ r.style.display="none"; document.getElementById("form").style.display="block"; window.scrollTo({top:0}); };
+
+  // カウントアップ
+  const el=document.getElementById("cnt"), target= total>=10000? total/10000 : total, t0=performance.now(), dur=1100;
+  const fmt=v=> total>=10000? v.toLocaleString("ja-JP",{maximumFractionDigits:1}) : Math.round(v).toLocaleString("ja-JP");
+  (function tick(t){ const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3); el.textContent=fmt(target*e); if(p<1) requestAnimationFrame(tick); })(t0);
+}
+</script>
+</body>
+</html>

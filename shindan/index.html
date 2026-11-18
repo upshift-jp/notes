@@ -86,6 +86,13 @@ header.top .wrap{padding:14px 16px;display:flex;align-items:center;gap:10px}
 .item .amt.na{font-family:inherit;font-size:12px;color:var(--muted);font-weight:500}
 .item p{font-size:13px;color:var(--muted);margin-top:4px}
 .item .why{font-size:12px;color:var(--navy2);margin-top:4px}
+.stchip{font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px;margin-left:6px;border:1px solid}
+.stchip.open{color:#1a8a5a;border-color:#9fd3b9;background:#eef8f2}
+.stchip.end{color:#b3261e;border-color:#f0b4ae;background:#fdecea;margin-left:0}
+.item .stchip.end{margin-left:6px}
+.stchip.next{color:#1f4f7d;border-color:#a9c1db;background:#edf3fa;margin-left:0}
+.item .stchip.next{margin-left:6px}
+.tm{font-size:13px;line-height:1.8;margin-top:8px}
 .item .grp{font-size:11px;color:var(--accent)}
 
 .msg{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:10px;padding:14px 16px;font-size:14px;margin-top:14px}
@@ -164,7 +171,7 @@ const Q = [
   {id:"ind", t:"業種に一番近いのは？", o:["製造・建設・運輸","小売・卸・EC","サービス・飲食","宿泊・観光","福祉・介護","IT・情報通信","その他"]},
   {id:"rev", t:"年商の規模は？", o:["〜3千万円","3千万〜1億円","1〜3億円","3〜10億円","10億円以上"]},
   {id:"pl", t:"直近期の損益は？", o:["黒字","赤字","創業1年目（決算前）"]},
-  {id:"plan", t:"今後1〜2年に予定していることは？", h:"あてはまるものをすべて選択", multi:true, o:["設備・機械の導入","省力化・自動化","ITツール・AI導入","新事業・新商品","店舗改装・新築","新しい販路・EC強化","賃上げ","正社員化・採用","AI研修・DX研修","その他の社員研修","特になし"]},
+  {id:"plan", t:"今後1〜2年に予定していることは？", h:"あてはまるものをすべて選択", multi:true, o:["設備・機械の導入","省力化・自動化","ITツール・AI導入","新事業・新商品","店舗改装・新築","新しい販路・EC強化","賃上げ","正社員化・採用","AI研修・DX研修","その他の社員研修","働き方改革（残業削減・休暇）","育児・介護との両立","シニア人材の活躍","特になし"]},
   {id:"fund", t:"借入・資金調達は？", o:["予定・検討あり","すでに借入がある","予定なし"]},
   {id:"age", t:"創業からの年数は？", o:["1年未満","1〜3年","3〜5年","5〜10年","10年以上"]},
 ];
@@ -182,6 +189,7 @@ const CAT = {
   jichi:{name:"自治体の助成・奨励金", src:"財源：都道府県・市区町村の税", color:"var(--c3)"},
   zei:{name:"税制優遇", src:"納める法人税そのものが減る", color:"var(--c4)"},
 };
+const ST = { open:"令和8年度 受付中", end:"2026年度で終了予定・お早めに", next:"2027年度 拡充予定" };
 const EMP_IDX = {"0名":0,"1〜5名":1,"6〜20名":2,"21〜50名":3,"51名以上":4};
 const has = p => (A.plan||[]).includes(p);
 const any = (...ps) => ps.some(has);
@@ -221,29 +229,84 @@ const PROGRAMS = [
     amt:()=> 50000,
     why:()=>"年商10億円以上×大型投資" },
 
-  { name:"キャリアアップ助成金（正社員化コース）", cat:"jyosei",
-    desc:"有期雇用・パート等を正社員に転換すると1人あたり定額を助成。",
-    ok:()=> ei()>=1 && has("正社員化・採用"),
-    amt:()=> 80*[0,1,2,3,5][ei()],
-    why:()=>`正社員化の予定あり（1人最大80万円 × ${[0,1,2,3,5][ei()]}人想定）` },
+  /* ---- 助成金（厚生労働省・雇用保険財源）令和8年度の内容＋令和9年度の動き ---- */
+  { name:"キャリアアップ助成金（正社員化コース）", cat:"jyosei", st:"open",
+    desc:"有期・パート等を正社員に転換すると1人あたり定額を助成。令和8年度は情報公表加算が新設。",
+    ok:()=> ei()>=1 && any("正社員化・採用"),
+    amt:()=> 80*[0,1,2,4,6][ei()],
+    why:()=>`正社員化の予定あり（1人最大80万円 × ${[0,1,2,4,6][ei()]}人想定、加算は別）` },
 
-  { name:"業務改善助成金", cat:"jyosei",
-    desc:"事業場内最低賃金の引上げと生産性向上の設備投資をセットで助成。",
-    ok:()=> ei()>=1 && has("賃上げ"),
-    amt:()=> [0,150,300,450,600][ei()],
-    why:()=>"賃上げの予定あり（引上げ人数に応じた上限の目安）。事業場内最低賃金が地域最賃に近い場合が対象" },
+  { name:"業務改善助成金", cat:"jyosei", st:"next",
+    desc:"事業場内最低賃金を50円以上引き上げ、生産性向上の設備投資等を行うと費用の最大4/5を助成。",
+    ok:()=> ei()>=1 && any("賃上げ","設備・機械の導入","省力化・自動化","ITツール・AI導入"),
+    amt:()=> [0,240,450,600,600][ei()],
+    why:()=>"賃上げ×設備投資（90円コースの人数別上限の目安）。令和8年度分は地域の最低賃金発効日前日または11月末で締切。令和9年度は予算を大幅増額し上限引上げを要求中" },
 
-  { name:"人材開発支援助成金（事業展開等リスキリング支援コース）", cat:"jyosei",
-    desc:"新事業・DX・AI活用に向けた研修の経費と研修中の賃金を助成（中小は経費の75%）。",
-    ok:()=> ei()>=1 && has("AI研修・DX研修"),
-    amt:()=> [0,100,300,600,1000][ei()],
-    why:()=>"AI・DX研修の予定あり（従業員規模から想定した研修規模での目安）" },
+  { name:"働き方改革推進支援助成金（労働時間短縮・年休促進支援コース）", cat:"jyosei", st:"open",
+    desc:"残業削減・休暇取得促進のための設備・システム導入、専門家活用などを助成。賃上げ加算あり。",
+    ok:()=> ei()>=1 && any("働き方改革（残業削減・休暇）","省力化・自動化","ITツール・AI導入"),
+    amt:()=> 150 + (has("賃上げ") ? [0,60,240,480,720][ei()] : 0),
+    why:()=> has("賃上げ")?"働き方改革×賃上げ（基本上限150万円＋賃上げ加算の目安）":"働き方改革・省力化の予定あり（基本上限150万円）" },
 
-  { name:"人材開発支援助成金（人材育成支援コース）", cat:"jyosei",
-    desc:"職務に関連する訓練の経費と賃金の一部を助成。",
-    ok:()=> ei()>=1 && has("その他の社員研修"),
-    amt:()=> [0,30,100,200,400][ei()],
-    why:()=>"社員研修の予定あり（想定研修規模での目安）" },
+  { name:"両立支援等助成金（出生時両立支援コース）", cat:"jyosei", st:"open",
+    desc:"男性の育児休業取得を進める職場づくりと、取得率の上昇を助成。",
+    ok:()=> ei()>=1 && has("育児・介護との両立"),
+    amt:()=> 80, why:()=>"育児との両立支援の予定あり（取得時・取得率上昇の合計の目安）" },
+
+  { name:"両立支援等助成金（育児休業等支援コース）", cat:"jyosei", st:"open",
+    desc:"育休の取得・職場復帰をプランに沿って支援した中小企業を助成。",
+    ok:()=> ei()>=1 && has("育児・介護との両立"),
+    amt:()=> 126, why:()=>"育児との両立支援の予定あり（2名分＋情報公表加算の最大額）" },
+
+  { name:"両立支援等助成金（育休中等業務代替支援コース）", cat:"jyosei", st:"open",
+    desc:"育休・短時間勤務中の業務を代替する人の新規雇用や手当支給を助成。令和8年度に拡充。",
+    ok:()=> ei()>=1 && has("育児・介護との両立"),
+    amt:()=> 81, why:()=>"代替要員の新規雇用（代替期間1年以上の区分）。手当支給等で上乗せあり" },
+
+  { name:"両立支援等助成金（介護離職防止支援コース）", cat:"jyosei", st:"open",
+    desc:"介護休業の取得・復帰、介護両立制度の利用、有給の介護休暇制度の導入を助成。",
+    ok:()=> ei()>=1 && has("育児・介護との両立"),
+    amt:()=> 90, why:()=>"介護との両立支援（休業・両立制度・有給介護休暇30万円の合計の目安）" },
+
+  { name:"人材開発支援助成金（人材育成支援コース）", cat:"jyosei", st:"open",
+    desc:"職務に関連する訓練の経費と訓練中の賃金の一部を助成。令和8年度から分割申請が可能に。",
+    ok:()=> ei()>=1 && any("その他の社員研修","AI研修・DX研修","正社員化・採用"),
+    amt:()=> [0,50,150,300,500][ei()],
+    why:()=>"社員研修の予定あり（従業員規模から想定した研修規模での目安）" },
+
+  { name:"人材開発支援助成金（事業展開等リスキリング支援コース）", cat:"jyosei", st:"end",
+    desc:"新事業・DX・AI活用に向けた研修の経費を中小企業は75%、賃金を1時間1,000円助成。",
+    ok:()=> ei()>=1 && any("AI研修・DX研修","新事業・新商品","ITツール・AI導入"),
+    amt:()=> [0,150,400,800,1500][ei()],
+    why:()=>"AI・DX・新事業の研修（想定研修規模での目安）。令和8年度末（2027年3月）までの時限措置" },
+
+  { name:"人材開発支援助成金（人への投資促進コース）", cat:"jyosei", st:"end",
+    desc:"サブスク型のeラーニング、IT未経験者へのIT訓練、自発的な学びの支援などを最大75%助成。",
+    ok:()=> ei()>=1 && any("AI研修・DX研修","その他の社員研修","ITツール・AI導入"),
+    amt:()=> [0,50,150,300,500][ei()],
+    why:()=>"研修・学び直しの予定あり（想定研修規模での目安）。令和8年度が最終年度の見込み" },
+
+  { name:"人材確保等支援助成金（雇用管理制度・雇用環境整備助成コース）", cat:"jyosei", st:"open",
+    desc:"賃金規定・人事評価などの制度導入や、作業負担を軽減する機器の導入で離職率を下げると助成。",
+    ok:()=> ei()>=1 && any("正社員化・採用","賃上げ"),
+    amt:()=> 150,
+    why:()=>"採用・定着や賃金制度の整備（制度導入50万円＋その他制度＋機器導入の合計の目安）" },
+
+  { name:"人材確保等支援助成金（テレワークコース）", cat:"jyosei", st:"end",
+    desc:"テレワーク制度の導入と機器・システムの整備を助成。",
+    ok:()=> ei()>=1 && any("働き方改革（残業削減・休暇）","育児・介護との両立"),
+    amt:()=> 100,
+    why:()=>"柔軟な働き方の整備（上限の目安）。令和8年度限りで廃止の方針" },
+
+  { name:"65歳超雇用推進助成金", cat:"jyosei", st:"open",
+    desc:"定年の引上げ・廃止や継続雇用制度の導入、高年齢者向けの評価制度の整備を助成。",
+    ok:()=> ei()>=1 && has("シニア人材の活躍"),
+    amt:()=> 160, why:()=>"シニア人材の活躍（継続雇用促進コースの最大額の目安。評価制度等コースは上限60万円）" },
+
+  { name:"特定求職者雇用開発助成金・トライアル雇用助成金", cat:"jyosei", st:"open",
+    desc:"高年齢者・障害者・就職氷河期世代などをハローワーク等の紹介で雇い入れると助成。",
+    ok:()=> ei()>=0 && has("正社員化・採用"),
+    amt:()=> 60, why:()=>"採用の予定あり（1人あたり60万円〜、対象者・雇用形態による。紹介前の確認が必須）" },
 
   /* ---- 東京都 ---- */
   { name:"東京都 創業助成事業", cat:"jichi",
@@ -383,6 +446,14 @@ document.getElementById("go").onclick=()=>{
   render(hits,byCat,total);
 };
 
+function timing(hits){
+  const end=hits.filter(x=>x.st==="end"), nx=hits.filter(x=>x.st==="next");
+  if(!end.length && !nx.length) return "";
+  return `<div class="sec"><h3>時期で差がつく制度</h3>
+    ${end.length?`<p class="tm"><span class="stchip end">2026年度で終了予定</span> ${end.map(x=>x.name).join("、")}<br>令和8年度末（2027年3月）までに計画届・申請の準備が必要です。</p>`:""}
+    ${nx.length?`<p class="tm"><span class="stchip next">2027年度 拡充予定</span> ${nx.map(x=>x.name).join("、")}<br>国の令和9年度概算要求で増額・上限引上げが示されています（予算成立前のため内容は変わる可能性があります）。今から賃上げ計画と投資計画を準備しておくと有利です。</p>`:""}
+  </div>`;
+}
 function render(hits,byCat,total){
   const r=document.getElementById("result");
   const order=["hojo","jyosei","jichi","zei"];
@@ -393,7 +464,7 @@ function render(hits,byCat,total){
   const legend = order.map(k=>`<div><span class="sw" style="background:${CAT[k].color}"></span><span>${CAT[k].name}<span class="src">${CAT[k].src}</span></span><b>${byCat[k]?yen(byCat[k])+"円":(hits.some(h=>h.cat===k)?"要試算":"—")}</b></div>`).join("");
 
   const items = hits.map(h=>`<div class="item">
-      <div class="row"><span class="chip" style="background:${CAT[h.cat].color}">${CAT[h.cat].name}</span></div>
+      <div class="row"><span class="chip" style="background:${CAT[h.cat].color}">${CAT[h.cat].name}</span>${h.st&&ST[h.st]?`<span class="stchip ${h.st}">${ST[h.st]}</span>`:""}</div>
       <div class="row" style="margin-top:6px"><h4>${h.name}</h4>${h.v?`<span class="amt">最大 ${yen(h.v)}円</span>`:`<span class="amt na">個別に試算</span>`}</div>
       <p>${h.d}</p><div class="why">▶ ${h.w}</div>
     </div>`).join("");
@@ -419,6 +490,7 @@ function render(hits,byCat,total){
       <p class="notes" style="margin-top:6px">合計額は、該当する各制度の上限額を合算した最大値です。国と都道府県の制度は併用できますが、同じ経費に重ねて補助を受けることはできないため、対象経費を分けて計画することが前提です。</p>
     </div>`:`
     <div class="sec"><h3>現時点で該当する制度は見つかりませんでした</h3><p style="font-size:14px;color:var(--muted)">今後の予定（Q6）によって使える制度は大きく変わります。事業の方向性を一緒に整理すると、思わぬ制度が見つかることも少なくありません。</p></div>`}
+    ${timing(hits)}
     ${advice}
     <div class="cta" id="lead">
       <h3>この結果をもとに、無料で個別診断します</h3>

@@ -35,9 +35,18 @@ header.top .wrap{padding:14px 18px;display:flex;align-items:center;gap:10px}
 .hero h1{font-size:clamp(28px,6.6vw,42px);font-weight:900;line-height:1.3;letter-spacing:-.01em;margin:4px 0 14px}
 .hero h1 em{font-style:normal;color:var(--navy);background:linear-gradient(transparent 62%,#ffe866 62%)}
 .hero p{font-size:15px;color:var(--muted)}
-.flow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:20px}
-.flow div{font-size:13px;background:#fff;border-radius:999px;padding:7px 14px;box-shadow:var(--shadow)}
-.flow b{color:var(--navy);font-weight:700}
+.nb{display:inline-block}
+.hero .lead{font-size:clamp(17px,4.4vw,20px);line-height:1.8;color:var(--ink);font-weight:500;margin-top:6px}
+.hero .lead b{font-weight:700}
+.hero .lead .hl{color:var(--navy)}
+.hero .lead2{font-size:clamp(17px,4.4vw,20px);line-height:1.8;color:var(--ink);font-weight:500;margin-top:14px}
+.hero .lead2 b{color:#c24700;font-weight:900}
+.flow{display:grid;gap:10px;max-width:560px;margin:24px auto 0}
+.fr{display:grid;grid-template-columns:1fr 28px 1.5fr;align-items:center;background:#fff;border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);text-align:left}
+.fr span{font-size:13px;color:var(--muted);line-height:1.5}
+.fr b{display:inline-block;font-size:16px;font-weight:700;color:var(--ink);margin-top:2px}
+.fr .back b{color:var(--navy)}
+.fr .arr{font-size:22px;font-weight:900;color:var(--accent);text-align:center}
 
 .progress{position:sticky;top:0;z-index:5;background:rgba(243,247,252,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:12px 0}
 .bar{height:8px;background:#dde7f3;border-radius:99px;overflow:hidden}
@@ -140,11 +149,12 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:24px 0}
       <div class="brandname">ウチ、もらえる？<span>診断</span></div>
       <span class="eyebrow">8つの質問・約30秒</span>
       <h1>あなたの会社が<br><em>取り逃がしている</em>お金はいくら？</h1>
-      <p>法人税・雇用保険料・地方税など、すでに納めているお金は<br>補助金・助成金・奨励金・税制優遇として「戻ってくる」可能性があります。</p>
+      <p class="lead"><span class="nb">会社は毎年、</span><span class="nb"><b>法人税・雇用保険料・</b></span><span class="nb"><b>都道府県税</b>を納めています。</span><br><span class="nb">そのお金は、条件を満たせば</span><span class="nb"><b class="hl">補助金・助成金・奨励金</b>として</span><span class="nb"><b class="hl">会社に戻ってきます。</b></span></p>
+      <p class="lead2"><span class="nb">でも、知らないまま</span><span class="nb">申請していない会社がほとんど。</span><br><span class="nb">それが<b>「取り逃がし」</b>です。</span></p>
       <div class="flow">
-        <div>法人税など → <b>国の補助金・税制</b></div>
-        <div>雇用保険料 → <b>助成金</b></div>
-        <div>都税など → <b>自治体の助成・奨励金</b></div>
+        <div class="fr"><span class="pay">納めている<br><b>法人税など</b></span><span class="arr" aria-hidden="true">→</span><span class="back">戻ってくる<br><b>国の補助金・税の優遇</b></span></div>
+        <div class="fr"><span class="pay">納めている<br><b>雇用保険料</b></span><span class="arr" aria-hidden="true">→</span><span class="back">戻ってくる<br><b>助成金</b></span></div>
+        <div class="fr"><span class="pay">納めている<br><b>都道府県税など</b></span><span class="arr" aria-hidden="true">→</span><span class="back">戻ってくる<br><b>自治体の助成金・奨励金</b></span></div>
       </div>
     </section>
     <div class="progress"><div class="bar"><i id="pbar"></i></div><small id="ptext">0 / 8 回答済み</small></div>

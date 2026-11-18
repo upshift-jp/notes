@@ -127,6 +127,8 @@ header.top .wrap{padding:14px 18px;display:flex;align-items:center;gap:10px}
 .req,.opt2{font-size:10.5px;font-weight:700;margin-left:8px;padding:2px 8px;border-radius:999px;color:#fff;background:var(--accent);vertical-align:2px}
 .opt2{background:#8794a3}
 .lf .agree{font-size:13px;font-weight:400;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
+.lf .agree a{color:var(--navy);font-weight:700}
+footer a{color:var(--muted)}
 .lf .agree input{margin-top:4px;width:18px;height:18px;flex:none;accent-color:var(--navy)}
 .lf .btn{margin-top:4px}
 .ferr{color:#c0392b;font-size:14px;font-weight:500;min-height:0}
@@ -167,7 +169,7 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:24px 0}
 
   <div id="result"></div>
 </main>
-<footer>© アップシフト合同会社（東京都八王子市）</footer>
+<footer><a href="https://upshift.jp/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>　© アップシフト合同会社（東京都八王子市）</footer>
 
 <script>
 /* ============================================================
@@ -519,7 +521,7 @@ function render(hits,byCat,total){
         <label>電話番号<span class="opt2">任意</span><input name="tel" type="tel" autocomplete="tel"></label>
         <label>従業員数<span class="opt2">任意</span><input name="staff" type="number" min="0" inputmode="numeric" placeholder="例：12（人）"></label>
         <label>ご相談したいこと<span class="opt2">任意</span><textarea name="note" rows="3" placeholder="例：来年の設備投資で使える補助金を知りたい"></textarea></label>
-        <label class="agree"><input type="checkbox" name="agree" required> ご入力いただいた情報は、診断結果のご案内とご相談への対応にのみ利用します。内容に同意します。</label>
+        <label class="agree"><input type="checkbox" name="agree" required> ご入力いただいた情報は、診断結果のご案内とご相談への対応にのみ利用します。<a href="https://upshift.jp/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します。</label>
         <div class="ferr" id="ferr"></div>
         <button class="btn" id="sendBtn" type="submit">無料で個別アドバイスを受け取る</button>
       </form>

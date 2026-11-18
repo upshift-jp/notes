@@ -360,7 +360,8 @@ function sendLead(e){
       .catch(()=>fail("送信に失敗しました。時間をおいて再度お試しください。"));
   } else {
     // プレビュー環境（Apps Script以外）では送信しない
-    setTimeout(()=>{ done(); document.querySelector("#thanks p").innerHTML="※これはプレビューです。実際の送信は、Apps Scriptで公開したページから行われます。"; },500);
+    // 送信先（CONFIG.endpoint）が未設定のとき
+    setTimeout(()=>fail("ただいま受付の準備中です。恐れ入りますが、しばらくしてから再度お試しください。"),400);
   }
 }
 
